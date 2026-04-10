@@ -133,3 +133,70 @@ class Token(BaseModel):
 class TokenData(BaseModel):
     """Token data schema"""
     username: Optional[str] = None
+
+
+# ==================== API KEY SCHEMAS ====================
+
+class APIKeyCreate(BaseModel):
+    """Schema for creating a new API key"""
+    name: str = Field(..., min_length=1, max_length=100)
+    expires_in_days: Optional[int] = Field(None, ge=1, le=365)  # None = never expires
+    
+    # Permissions (can restrict access)
+    can_read_tasks: bool = True
+    can_create_tasks: bool = True
+    can_update_tasks: bool = True
+    can_delete_tasks: bool = False
+    can_read_dashboard: bool = True
+
+
+class APIKeyResponse(BaseModel):
+    """Schema for API key response (shown only once when created)"""
+    id: int
+    name: str
+    api_key: str  # Full key shown only when created
+    prefix: str  # First 10 chars for identification
+    expires_at: Optional[datetime]
+    created_at: datetime
+    
+    class Config:
+        from_attributes = True
+
+
+class APIKeyListItem(BaseModel):
+    """Schema for listing API keys (key hidden for security)"""
+    id: int
+    name: str
+    prefix: str  # Only show prefix for security
+    is_active: bool
+    created_at: datetime
+    last_used_at: Optional[datetime]
+    expires_at: Optional[datetime]
+    
+    # Permissions summary
+    can_read_tasks: bool
+    can_create_tasks: bool
+    can_update_tasks: bool
+    can_delete_tasks: bool
+    can_read_dashboard: bool
+    
+    class Config:
+        from_attributes = True
+
+
+class APIKeyUpdate(BaseModel):
+    """Schema for updating API key"""
+    name: Optional[str] = Field(None, min_length=1, max_length=100)
+    is_active: Optional[bool] = None
+    
+    # Permissions updates
+    can_read_tasks: Optional[bool] = None
+    can_create_tasks: Optional[bool] = None
+    can_update_tasks: Optional[bool] = None
+    can_delete_tasks: Optional[bool] = None
+    can_read_dashboard: Optional[bool] = None
+
+
+class APIKeyRevoke(BaseModel):
+    """Schema for revoking/deleting API key"""
+    confirm: bool = Field(..., description="Set to true to confirm revocation")

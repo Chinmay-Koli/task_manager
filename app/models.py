@@ -50,3 +50,32 @@ class Task(Base):
     # Relationships
     creator = relationship("User", foreign_keys=[created_by], backref="created_tasks")
     assignee = relationship("User", foreign_keys=[assigned_to], backref="assigned_tasks")
+
+
+class APIKey(Base):
+    """API Key model for third-party integrations and long-lived access"""
+    __tablename__ = "api_keys"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
+    name = Column(String, index=True)  # Descriptive name (e.g., "Mobile App", "CI/CD")
+    hashed_key = Column(String, unique=True, index=True)  # Hashed API key
+    prefix = Column(String, index=True)  # First 8 chars for identification (e.g., "tm_a1b2c3")
+    
+    # Access control
+    is_active = Column(Boolean, default=True, index=True)
+    
+    # Permissions
+    can_read_tasks = Column(Boolean, default=True)
+    can_create_tasks = Column(Boolean, default=True)
+    can_update_tasks = Column(Boolean, default=True)
+    can_delete_tasks = Column(Boolean, default=False)
+    can_read_dashboard = Column(Boolean, default=True)
+    
+    # Timestamps
+    created_at = Column(DateTime, default=datetime.utcnow, index=True)
+    last_used_at = Column(DateTime, nullable=True)
+    expires_at = Column(DateTime, nullable=True)  # Optional expiration
+    
+    # Relationship
+    user = relationship("User", backref="api_keys")

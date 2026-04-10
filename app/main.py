@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.routes import user, task, dashboard
+from app.routes import user, task, dashboard, api_keys
 from app.database import init_db
 
 # Initialize database
@@ -26,6 +26,7 @@ app.add_middleware(
 app.include_router(user.router, prefix="/api/users", tags=["users"])
 app.include_router(task.router, prefix="/api/tasks", tags=["tasks"])
 app.include_router(dashboard.router, prefix="/api/dashboard", tags=["dashboard"])
+app.include_router(api_keys.router, prefix="/api", tags=["api-keys"])
 
 @app.get("/")
 async def root():
