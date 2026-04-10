@@ -22,28 +22,15 @@
           "name": "Register User",
           "request": {
             "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"username\": \"john_doe\",\n  \"email\": \"john@example.com\",\n  \"full_name\": \"John Doe\",\n  \"password\": \"SecurePass123\"\n}"
             },
             "url": {
-              "raw": "http://localhost:8000/api/users/register",
-              "protocol": "http",
-              "host": [
-                "localhost"
-              ],
-              "port": "8000",
-              "path": [
-                "api",
-                "users",
-                "register"
-              ]
+              "raw": "{{base_url}}/api/users/register",
+              "host": ["{{base_url}}"],
+              "path": ["api", "users", "register"]
             },
             "description": "Register a new user account"
           },
@@ -51,32 +38,34 @@
         },
         {
           "name": "Login User",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res.access_token) {",
+                  "    pm.collectionVariables.set('auth_token', res.access_token);",
+                  "    console.log('Token saved automatically');",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"username\": \"john_doe\",\n  \"password\": \"SecurePass123\"\n}"
             },
             "url": {
-              "raw": "http://localhost:8000/api/users/login",
-              "protocol": "http",
-              "host": [
-                "localhost"
-              ],
-              "port": "8000",
-              "path": [
-                "api",
-                "users",
-                "login"
-              ]
+              "raw": "{{base_url}}/api/users/login",
+              "host": ["{{base_url}}"],
+              "path": ["api", "users", "login"]
             },
-            "description": "Login and get JWT token"
+            "description": "Login and get JWT token. Token is automatically saved to {{auth_token}} variable."
           },
           "response": []
         },
@@ -86,17 +75,9 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "http://localhost:8000/api/users/me",
-              "protocol": "http",
-              "host": [
-                "localhost"
-              ],
-              "port": "8000",
-              "path": [
-                "api",
-                "users",
-                "me"
-              ]
+              "raw": "{{base_url}}/api/users/me",
+              "host": ["{{base_url}}"],
+              "path": ["api", "users", "me"]
             },
             "description": "Get current logged-in user info"
           },
@@ -113,25 +94,12 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "http://localhost:8000/api/users?skip=0&limit=100",
-              "protocol": "http",
-              "host": [
-                "localhost"
-              ],
-              "port": "8000",
-              "path": [
-                "api",
-                "users"
-              ],
+              "raw": "{{base_url}}/api/users?skip=0&limit=100",
+              "host": ["{{base_url}}"],
+              "path": ["api", "users"],
               "query": [
-                {
-                  "key": "skip",
-                  "value": "0"
-                },
-                {
-                  "key": "limit",
-                  "value": "100"
-                }
+                { "key": "skip", "value": "0" },
+                { "key": "limit", "value": "100" }
               ]
             },
             "description": "Get list of all users (for assignment dropdown)"
@@ -144,17 +112,9 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "http://localhost:8000/api/users/1",
-              "protocol": "http",
-              "host": [
-                "localhost"
-              ],
-              "port": "8000",
-              "path": [
-                "api",
-                "users",
-                "1"
-              ]
+              "raw": "{{base_url}}/api/users/{{user_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "users", "{{user_id}}"]
             },
             "description": "Get user details by user ID"
           },
@@ -171,82 +131,53 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "http://localhost:8000/api/tasks?skip=0&limit=10&status=not_started&sort_by=created_at",
-              "protocol": "http",
-              "host": [
-                "localhost"
-              ],
-              "port": "8000",
-              "path": [
-                "api",
-                "tasks"
-              ],
+              "raw": "{{base_url}}/api/tasks?skip=0&limit=10&sort_by=created_at",
+              "host": ["{{base_url}}"],
+              "path": ["api", "tasks"],
               "query": [
-                {
-                  "key": "skip",
-                  "value": "0"
-                },
-                {
-                  "key": "limit",
-                  "value": "10"
-                },
-                {
-                  "key": "status",
-                  "value": "not_started",
-                  "disabled": false
-                },
-                {
-                  "key": "assigned_to",
-                  "value": "1",
-                  "disabled": true
-                },
-                {
-                  "key": "created_by",
-                  "value": "1",
-                  "disabled": true
-                },
-                {
-                  "key": "overdue",
-                  "value": "false",
-                  "disabled": true
-                },
-                {
-                  "key": "sort_by",
-                  "value": "created_at"
-                }
+                { "key": "skip", "value": "0" },
+                { "key": "limit", "value": "10" },
+                { "key": "status", "value": "not_started", "disabled": true },
+                { "key": "assigned_to", "value": "1", "disabled": true },
+                { "key": "created_by", "value": "1", "disabled": true },
+                { "key": "overdue", "value": "true", "disabled": true },
+                { "key": "sort_by", "value": "created_at" }
               ]
             },
-            "description": "Get tasks with filtering and sorting\n\nQuery Parameters:\n- status: not_started, in_progress, completed\n- assigned_to: User ID\n- created_by: User ID\n- overdue: true/false\n- sort_by: created_at, due_date, priority, position"
+            "description": "Get tasks with filtering and sorting"
           },
           "response": []
         },
         {
           "name": "Create Task",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res.id) {",
+                  "    pm.collectionVariables.set('task_id', res.id);",
+                  "    console.log('task_id saved: ' + res.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"title\": \"Implement user authentication\",\n  \"description\": \"Add JWT-based authentication to the API\",\n  \"priority\": 5,\n  \"due_date\": \"2026-04-20T18:00:00\",\n  \"assigned_to\": 2\n}"
             },
             "url": {
-              "raw": "http://localhost:8000/api/tasks",
-              "protocol": "http",
-              "host": [
-                "localhost"
-              ],
-              "port": "8000",
-              "path": [
-                "api",
-                "tasks"
-              ]
+              "raw": "{{base_url}}/api/tasks",
+              "host": ["{{base_url}}"],
+              "path": ["api", "tasks"]
             },
-            "description": "Create a new task\n\nNote: assigned_to is optional. New tasks start as 'not_started' with position at end of column."
+            "description": "Create a new task. task_id is automatically saved to {{task_id}} variable."
           },
           "response": []
         },
@@ -256,17 +187,9 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "http://localhost:8000/api/tasks/1",
-              "protocol": "http",
-              "host": [
-                "localhost"
-              ],
-              "port": "8000",
-              "path": [
-                "api",
-                "tasks",
-                "1"
-              ]
+              "raw": "{{base_url}}/api/tasks/{{task_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "tasks", "{{task_id}}"]
             },
             "description": "Get task details with creator and assignee info"
           },
@@ -276,30 +199,17 @@
           "name": "Update Task",
           "request": {
             "method": "PUT",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"title\": \"Updated task title\",\n  \"description\": \"Updated description\",\n  \"priority\": 4,\n  \"due_date\": \"2026-04-25T18:00:00\",\n  \"assigned_to\": 3\n}"
             },
             "url": {
-              "raw": "http://localhost:8000/api/tasks/1",
-              "protocol": "http",
-              "host": [
-                "localhost"
-              ],
-              "port": "8000",
-              "path": [
-                "api",
-                "tasks",
-                "1"
-              ]
+              "raw": "{{base_url}}/api/tasks/{{task_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "tasks", "{{task_id}}"]
             },
-            "description": "Update task details (title, description, priority, due_date, assigned_to)\n\nNote: Use 'Move Task' endpoint to change status and position"
+            "description": "Update task details"
           },
           "response": []
         },
@@ -307,31 +217,17 @@
           "name": "Move Task (Change Status/Position)",
           "request": {
             "method": "PATCH",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"new_status\": \"in_progress\",\n  \"new_position\": 1\n}"
             },
             "url": {
-              "raw": "http://localhost:8000/api/tasks/1/move",
-              "protocol": "http",
-              "host": [
-                "localhost"
-              ],
-              "port": "8000",
-              "path": [
-                "api",
-                "tasks",
-                "1",
-                "move"
-              ]
+              "raw": "{{base_url}}/api/tasks/{{task_id}}/move",
+              "host": ["{{base_url}}"],
+              "path": ["api", "tasks", "{{task_id}}", "move"]
             },
-            "description": "Move task between statuses or reorder within status (Jira-like)\n\nStatuses: not_started, in_progress, completed\n\nThis automatically handles:\n- Moving task to different status column\n- Reordering within same column\n- Position management\n- Setting completed_at timestamp when marking completed"
+            "description": "Move task between statuses or reorder within status (Jira-like)"
           },
           "response": []
         },
@@ -341,17 +237,9 @@
             "method": "DELETE",
             "header": [],
             "url": {
-              "raw": "http://localhost:8000/api/tasks/1",
-              "protocol": "http",
-              "host": [
-                "localhost"
-              ],
-              "port": "8000",
-              "path": [
-                "api",
-                "tasks",
-                "1"
-              ]
+              "raw": "{{base_url}}/api/tasks/{{task_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "tasks", "{{task_id}}"]
             },
             "description": "Delete a task (only creator can delete)"
           },
@@ -368,19 +256,11 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "http://localhost:8000/api/dashboard/stats",
-              "protocol": "http",
-              "host": [
-                "localhost"
-              ],
-              "port": "8000",
-              "path": [
-                "api",
-                "dashboard",
-                "stats"
-              ]
+              "raw": "{{base_url}}/api/dashboard/stats",
+              "host": ["{{base_url}}"],
+              "path": ["api", "dashboard", "stats"]
             },
-            "description": "Get dashboard statistics for current user (personal stats)"
+            "description": "Get dashboard statistics for current user"
           },
           "response": []
         },
@@ -390,19 +270,11 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "http://localhost:8000/api/dashboard/team-stats",
-              "protocol": "http",
-              "host": [
-                "localhost"
-              ],
-              "port": "8000",
-              "path": [
-                "api",
-                "dashboard",
-                "team-stats"
-              ]
+              "raw": "{{base_url}}/api/dashboard/team-stats",
+              "host": ["{{base_url}}"],
+              "path": ["api", "dashboard", "team-stats"]
             },
-            "description": "Get team-wide dashboard statistics with task breakdown by user"
+            "description": "Get team-wide dashboard statistics"
           },
           "response": []
         },
@@ -412,17 +284,9 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "http://localhost:8000/api/dashboard/summary",
-              "protocol": "http",
-              "host": [
-                "localhost"
-              ],
-              "port": "8000",
-              "path": [
-                "api",
-                "dashboard",
-                "summary"
-              ]
+              "raw": "{{base_url}}/api/dashboard/summary",
+              "host": ["{{base_url}}"],
+              "path": ["api", "dashboard", "summary"]
             },
             "description": "Get personal dashboard summary with recent, upcoming, and overdue tasks"
           },
@@ -434,19 +298,9 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "http://localhost:8000/api/dashboard/user/1/workload",
-              "protocol": "http",
-              "host": [
-                "localhost"
-              ],
-              "port": "8000",
-              "path": [
-                "api",
-                "dashboard",
-                "user",
-                "1",
-                "workload"
-              ]
+              "raw": "{{base_url}}/api/dashboard/user/{{user_id}}/workload",
+              "host": ["{{base_url}}"],
+              "path": ["api", "dashboard", "user", "{{user_id}}", "workload"]
             },
             "description": "Get workload statistics for a specific user"
           },
@@ -463,15 +317,9 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "http://localhost:8000/health",
-              "protocol": "http",
-              "host": [
-                "localhost"
-              ],
-              "port": "8000",
-              "path": [
-                "health"
-              ]
+              "raw": "{{base_url}}/health",
+              "host": ["{{base_url}}"],
+              "path": ["health"]
             },
             "description": "Health check endpoint"
           },
@@ -483,15 +331,9 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "http://localhost:8000/",
-              "protocol": "http",
-              "host": [
-                "localhost"
-              ],
-              "port": "8000",
-              "path": [
-                ""
-              ]
+              "raw": "{{base_url}}/",
+              "host": ["{{base_url}}"],
+              "path": [""]
             },
             "description": "API root endpoint"
           },
@@ -501,10 +343,9 @@
     }
   ],
   "variable": [
-    {
-      "key": "auth_token",
-      "value": "",
-      "type": "string"
-    }
+    { "key": "base_url", "value": "http://localhost:8000", "type": "string" },
+    { "key": "auth_token", "value": "", "type": "string" },
+    { "key": "user_id", "value": "1", "type": "string" },
+    { "key": "task_id", "value": "1", "type": "string" }
   ]
 }
