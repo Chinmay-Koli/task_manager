@@ -42,7 +42,7 @@ All endpoints now have authentication! Just select endpoint and click **Send**
 ```
 Request → Headers tab → Add:
 Key: Authorization
-Value: Bearer YOUR_TOKEN_HERE
+Value: Bearer <your_token_here>
 ```
 
 ### Option B: Automatic (Recommended)
